@@ -1,0 +1,398 @@
+>>>malloy
+source: archive is duckdb.table('PDFdata.csv') extend{
+      dimension: date_of_aquisition is strptime!date(concat(`month`,'-01'), '%Y-%m-%d')
+      dimension: difference_between_hand_and_long is (handgun - long_gun)
+      
+}
+
+
+    
+>>>markdown
+1. How many months in the dataset since the date is organized by state by month?
+>>>malloy
+run: archive -> {
+    aggregate: counted_months is count(date_of_aquisition)
+}
+>>>markdown
+2. How many checks for handguns are created over months?
+>>>malloy
+# line_chart
+run: archive -> {
+    group_by: date_of_aquisition
+    aggregate: handgun is sum(handgun)
+    limit: 100000000000
+
+}
+>>>markdown
+3. How many checks for long guns are created over months?
+>>>malloy
+
+# line_chart
+run: archive -> {
+    group_by: date_of_aquisition
+    aggregate: long_gun_gun is sum(long_gun)
+    limit: 100000000000
+
+}
+>>>markdown
+4. How many checks for private sale handguns are created over months?
+>>>malloy
+# line_chart
+run: archive -> {
+    group_by: date_of_aquisition
+    aggregate: private_sale_handgun is sum(private_sale_handgun)
+    limit: 100000000000
+
+}
+>>>markdown
+5. How many checks for private sale long guns are created over months?
+>>>malloy
+# line_chart
+run: archive -> {
+    group_by: date_of_aquisition
+    aggregate: private_sale_long_gun is sum(private_sale_long_gun)
+    limit: 100000000000
+
+}
+>>>markdown
+6. Top 5 States with Highest private sale handgun
+>>>malloy
+# bar_chart
+run: archive -> {
+    group_by: state
+    aggregate: private_sale_handgun is sum(private_sale_handgun)
+    order_by: private_sale_handgun desc
+    limit: 5
+
+}
+>>>markdown
+7. The state with least private sale handgun
+>>>malloy
+
+run: archive -> {
+    group_by: state
+    aggregate: private_sale_handgun is sum(private_sale_handgun)
+    order_by: private_sale_handgun asc
+    limit: 1
+
+}
+>>>markdown
+8. The difference between hand and long gun in each states
+>>>malloy
+# line_chart
+run: archive -> {
+    group_by: state
+    aggregate: difference_between_hand_and_long is sum(difference_between_hand_and_long)
+    limit: 100000000000
+
+}
+>>>markdown
+9. The total number of hand gun in nation
+>>>malloy
+run: archive -> {
+aggregate: handgun is sum(handgun)
+
+}
+>>>markdown
+10. The total number of long gun in nation 
+>>>malloy
+run: archive -> {
+aggregate: long_gun is sum(long_gun)
+
+}
+>>>markdown
+11. the total number of handgun in each states
+>>>malloy
+run: archive -> {
+group_by: state
+aggregate: handgun is sum(handgun)
+
+}
+>>>markdown
+12. the total number of long gun in each states
+>>>malloy
+run: archive -> {
+group_by: state
+aggregate: long_gun is sum(long_gun)
+
+}
+>>>markdown
+13. total permits for each state
+>>>malloy
+run: archive -> {
+group_by: state
+aggregate: permit is sum(permit)
+
+}
+>>>markdown
+14. redemption of handgun in each state
+>>>malloy
+run: archive -> {
+  group_by: state
+  aggregate: redemption_handgun is sum(redemption_handgun)
+
+}
+>>>markdown
+15. redemption of long gun in each states
+>>>malloy
+run: archive -> {
+  group_by: state
+  aggregate: redemption_long_gun is sum(redemption_long_gun)
+
+}
+>>>markdown
+16. total permits over time
+>>>malloy
+# line_chart
+run: archive -> {
+group_by: date_of_aquisition
+aggregate: permit is sum(permit)
+limit: 10000000000
+}
+>>>markdown
+17. rentals handgun over time
+>>>malloy
+# bar_chart
+run: archive -> {
+group_by: date_of_aquisition
+aggregate: handgun is sum(handgun)
+
+
+}
+>>>markdown
+18. rentals of long gun over time 
+>>>malloy
+# bar_chart
+run: archive -> {
+group_by: date_of_aquisition
+aggregate: long_gun is sum(long_gun)
+}
+>>>markdown
+19. rentals handgun in each states
+>>>malloy
+# bar_chart
+run: archive -> {
+group_by: state
+aggregate: handgun is sum(handgun)
+
+
+}
+>>>markdown
+20. rentals of long gun in each states
+>>>malloy
+# bar_chart
+run: archive -> {
+group_by: state
+aggregate: long_gungun is sum(long_gun)
+
+
+}
+>>>markdown
+21. handgun return in each states
+>>>malloy
+# bar_chart
+run: archive -> {
+group_by: state
+aggregate: return_to_seller_handgun is sum(return_to_seller_handgun)
+
+
+}
+>>>markdown
+22. long gun return in each states
+>>>malloy
+# bar_chart
+run: archive -> {
+group_by: state
+aggregate: return_to_seller_long_gun is sum(return_to_seller_long_gun)
+
+
+}
+>>>markdown
+23. returned hand gun over time
+>>>malloy
+# bar_chart
+run: archive -> {
+group_by: date_of_aquisition
+aggregate: returned_handgun is sum(returned_handgun)
+
+
+}
+>>>markdown
+24. returned long gun over time
+>>>malloy
+# bar_chart
+run: archive -> {
+group_by: date_of_aquisition
+aggregate: returned_long_gun is sum(returned_long_gun)
+
+
+}
+>>>markdown
+25. total private guns
+>>>malloy
+
+run: archive -> {
+aggregate: total_private_handguns is sum(private_sale_handgun),
+               total_private_long_guns is sum(private_sale_long_gun),
+               total_private_other is sum(private_sale_other)
+
+
+}
+>>>markdown
+26. percentage of private sell gun
+>>>malloy
+run: archive -> {
+aggregate: private_sales_pct is (sum(private_sale_handgun + private_sale_long_gun + private_sale_other) / sum(totals)) * 100
+}
+>>>markdown
+27. percentage of private sell hand gun
+>>>malloy
+run: archive -> {
+aggregate: private_sales_handgun_pct is (sum(private_sale_handgun ) / sum(private_sale_handgun+ private_sale_long_gun + private_sale_other)) * 100
+}
+>>>markdown
+28. percentage of private sell long gun
+>>>malloy
+run: archive -> {
+aggregate: private_sales_long_gun_pct is (sum(private_sale_long_gun ) / sum(private_sale_handgun+ private_sale_long_gun + private_sale_other)) * 100
+}
+>>>markdown
+29. Monthly Trend of Private Sales
+>>>malloy
+# line_chart
+run: archive -> {
+group_by: date_of_aquisition
+    aggregate: total_private_sales is sum(private_sale_handgun + private_sale_long_gun + private_sale_other)
+    order_by: date_of_aquisition
+    limit: 100000000000
+}
+>>>markdown
+30. Monthly Trend of Redemption Transactions
+>>>malloy
+# line_chart
+run: archive -> {
+group_by: date_of_aquisition
+    aggregate: total_redemptions is sum(redemption_handgun + redemption_long_gun + redemption_other)
+    order_by: date_of_aquisition
+    limit: 100000000000
+}
+>>>markdown
+31. Average Monthly Redemption (Across All States)
+>>>malloy
+run: archive -> {
+aggregate: average_redemption is avg(redemption_handgun + redemption_long_gun + redemption_other)
+
+}
+>>>markdown
+32. Top 5 States by Rental Transactions
+>>>malloy
+run: archive -> {
+group_by: state
+    aggregate: total_rentals is sum(rentals_handgun + rentals_long_gun)
+    order_by: total_rentals desc
+    limit: 3
+}
+>>>markdown
+33. Top 5 States with the Lowest Average Monthly Transactions
+>>>malloy
+run: archive -> {
+group_by: state
+    aggregate: avg_monthly is avg(totals)
+    order_by: avg_monthly asc
+    limit: 5
+}
+>>>markdown
+34. Month with Largest Absolute Difference Between Handgun and Long Gun Sales
+>>>malloy
+run: archive -> {
+group_by: date_of_aquisition
+    aggregate:
+      abs_diff is abs(sum(handgun) - sum(long_gun))
+    top: 1  
+}
+>>>markdown
+35. Sum of Permit Re-checks by State
+>>>malloy
+run: archive -> {
+group_by: state
+    aggregate: total_recheck is sum(permit_recheck)
+    order_by: total_recheck desc
+}
+>>>markdown
+36. Monthly Trend of Permit Re-checks
+>>>malloy
+
+# line_chart
+run: archive -> {
+group_by: date_of_aquisition
+    aggregate: total_recheck is sum(permit_recheck)
+    order_by: date_of_aquisition
+    limit: 1000000000
+}
+>>>markdown
+37. Top 5 States with Highest Ratio of 'Other' Firearms to Total
+>>>malloy
+
+run: archive -> {
+group_by: state
+    aggregate:
+      ratio_other is (sum(other)*1.0) / nullif(sum(totals), 0)
+    order_by: ratio_other desc
+    limit: 5
+}
+>>>markdown
+38.  Monthly Sum of All Returned Firearms
+>>>malloy
+
+run: archive -> {
+group_by: date_of_aquisition
+    aggregate: total_returns is sum(returned_handgun + returned_long_gun + returned_other)
+    order_by: date_of_aquisition
+}
+>>>markdown
+39.  Top 5 States by Return-to-Seller Transactions
+>>>malloy
+ 
+  run: archive -> { 
+    group_by: state
+    aggregate:
+      total_return_to_seller is sum(return_to_seller_handgun + return_to_seller_long_gun + return_to_seller_other)
+    order_by: total_return_to_seller desc
+    limit: 5
+
+  }
+
+>>>markdown
+40. Monthly Difference Between 'totals' and Sum of Handgun, Long Gun, Other
+>>>malloy
+
+  run: archive -> { 
+    group_by: date_of_aquisition
+    aggregate:
+      sum_of_categories is sum(handgun + long_gun + other),
+      monthly_total is sum(totals)
+      difference is sum(totals) - sum(handgun + long_gun + other)
+    order_by: date_of_aquisition
+
+  }
+>>>markdown
+41. Monthly Sum of Permit vs. Permit Re-check
+>>>malloy
+  run: archive -> { 
+    group_by: date_of_aquisition
+    aggregate:
+      total_permits is sum(permit),
+      total_rechecks is sum(permit_recheck)
+    order_by: date_of_aquisition
+
+  }
+>>>markdown
+42. Monthly Sum of 'Admin' Transactions
+>>>malloy
+# line_chart
+run: archive -> { 
+    group_by: date_of_aquisition
+    aggregate: total_admin is sum(admin)
+    order_by: date_of_aquisition
+
+  }
