@@ -3,10 +3,73 @@ source: archive is duckdb.table('PDFdata.csv') extend{
       dimension: date_of_aquisition is strptime!date(concat(`month`,'-01'), '%Y-%m-%d')
       dimension: difference_between_hand_and_long is (handgun - long_gun)
       
+  # shape_map
+  view: by_state_shaped is state
 }
 
 
     
+>>>markdown
+Dashboard for Visualization
+>>>markdown
+Dashborad for fun visualizations
+>>>malloy
+
+# Dashboard
+run: archive -> {
+ # line_chart
+  nest: `handgun_checks_created_over_month` is {
+    group_by: date_of_aquisition
+    aggregate: handgun is sum(handgun)
+    limit: 100000000000
+  }
+
+
+# line_chart
+  nest: line_chart_private_sale is {
+    group_by: date_of_aquisition
+    aggregate: private_sale_handgun is sum(private_sale_handgun)
+    limit: 100000000000
+  }
+
+
+  # line_chart
+nest: total_permits_over_time is {
+group_by: date_of_aquisition
+aggregate: permit is sum(permit)
+limit: 10000000000
+}
+}
+>>>malloy
+
+  # Dashboard
+run: archive -> {
+ # shape_map
+  nest: `total_handgun_checks_created_by_each_state` is {
+   group_by: state
+    aggregate: handgun is count(handgun)
+  }
+
+
+#  shape_map
+  nest: `total_longgun_checks_created_by_each_state` is {
+   group_by: state
+    aggregate: long_gun is count(long_gun)
+  }
+
+
+ # shape_map
+  nest: `total_private_handgun_checks_created_by_each_state` is {
+   group_by: state
+    aggregate: private_sale_handgunn is count(private_sale_handgun)
+  }
+
+  # shape_map
+  nest: `total_private_long_gun_checks_created_by_each_state` is {
+   group_by: state
+    aggregate: private_sale_long_gun is count(private_sale_long_gun)
+  }
+}
 >>>markdown
 1. How many months in the dataset since the date is organized by state by month?
 >>>malloy
@@ -361,7 +424,6 @@ group_by: date_of_aquisition
     limit: 5
 
   }
-
 >>>markdown
 40. Monthly Difference Between 'totals' and Sum of Handgun, Long Gun, Other
 >>>malloy
